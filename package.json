@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "apollo-server": "^3.6.2",
+    "graphql": "^16.3.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "chat",
+  "version": "1.0.0",
+  "main": "server.js",
+  "devDependencies": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
