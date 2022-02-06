@@ -2,15 +2,28 @@ const { User } = require("../models");
 const bcrypt = require("bcryptjs");
 const { UserInputError, AuthenticationError } = require("apollo-server");
 const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("../config/env.json");
 
 module.exports = {
   Query: {
-    getUsers: async () => {
+    getUsers: async (_, __, context) => {
       try {
+        let user;
+        if (context.req && context.req.headers.authorization) {
+          const token = context.req.headers.authorization.split("Bearer ")[1];
+          jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
+            if (err) {
+              throw new AuthenticationError("Unauthenticated");
+            }
+            user = decodedToken;
+          });
+        }
+
         const users = await User.findAll();
         return users;
       } catch (err) {
         console.log(err);
+        throw err;
       }
     },
     login: async (_, args) => {
@@ -41,13 +54,15 @@ module.exports = {
           throw new AuthenticationError("password is incorrect", { errors });
         }
 
-        const token = jwt.sign({ username }, "secretStringThatKnowOnlyMe", {
+        const token = jwt.sign({ username }, JWT_SECRET, {
           expiresIn: 60 * 60,
         });
 
-        user.token = token;
-
-        return user;
+        return {
+          ...user.toJSON(),
+          createdAt: user.createdAt.toISOString(),
+          token,
+        };
       } catch (err) {
         console.log(err);
         throw err;
