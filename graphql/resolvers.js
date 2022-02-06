@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const { UserInputError, AuthenticationError } = require("apollo-server");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config/env.json");
+const { Op } = require("sequelize");
 
 module.exports = {
   Query: {
@@ -19,7 +20,10 @@ module.exports = {
           });
         }
 
-        const users = await User.findAll();
+        //don't return myself bcz I don't want to chat with mySelf
+        const users = await User.findAll({
+          where: { username: { [Op.ne]: user.username } }, //Op.ne=> Operation not equal
+        });
         return users;
       } catch (err) {
         console.log(err);
