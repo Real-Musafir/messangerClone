@@ -1,14 +1,12 @@
+import React, { useState } from "react";
 import "./App.scss";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container } from "react-bootstrap";
+import Register from "./pages/Register";
 
 function App() {
   return (
-    <Container>
-      <Row>
-        <Col>
-          <h1>Register</h1>
-        </Col>
-      </Row>
+    <Container className="pt-5">
+      <Register />
     </Container>
   );
 }
