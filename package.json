@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "nodemon server.js",
-    "start": "node server.js"
+    "start": "node server.js --ignore client/"
   },
   "name": "chat",
   "version": "1.0.0",
