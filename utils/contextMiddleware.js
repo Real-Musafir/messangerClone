@@ -7,7 +7,8 @@ module.exports = (context) => {
     const token = context.req.headers.authorization.split("Bearer ")[1];
     jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
       if (err) {
-        throw new AuthenticationError("Unauthenticated");
+        // throw new AuthenticationError("Unauthenticated");
+        //don't throw error bcz for other user i should not check they are logged or Not
       }
       context.user = decodedToken;
     });
