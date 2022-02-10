@@ -128,6 +128,8 @@ module.exports = {
 
         if (!recipient) {
           throw new UserInputError("User not found");
+        } else if (recipient.username === user.username) {
+          throw new UserInputError("You can't message your self ");
         }
 
         if (content.trim() === "") {
