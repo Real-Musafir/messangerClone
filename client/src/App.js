@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./App.scss";
 import { Container } from "react-bootstrap";
 import Register from "./pages/Register";
@@ -9,7 +9,6 @@ import Login from "./pages/Login";
 import { AuthProvider } from "./context/auth";
 import DynamicRoute from "./nutil/DynamicRoute";
 
-////test git
 function App() {
   return (
     <ApolloProvider>

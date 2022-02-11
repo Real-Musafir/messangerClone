@@ -48,4 +48,4 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuthState = () => useContext(AuthStateContext);
-export const useAuthDisptach = () => useContext(AuthDispatchContext);
+export const useAuthDispatch = () => useContext(AuthDispatchContext);
