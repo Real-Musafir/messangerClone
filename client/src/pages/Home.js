@@ -1,7 +1,7 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Row, Col, Button, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useLazyQuery } from "@apollo/client";
 
 import { useAuthDispatch } from "../context/auth";
 
@@ -23,8 +23,22 @@ const GET_USERS = gql`
   }
 `;
 
+const GET_MESSAGES = gql`
+  query getUsers($from: String!) {
+    getMessages(from: $from) {
+      uuid
+      from
+      to
+      content
+      createdAt
+    }
+  }
+`;
+
 export default function Home({ history }) {
   const dispatch = useAuthDispatch();
+
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const logout = () => {
     dispatch({ type: "LOGOUT" });
@@ -33,13 +47,16 @@ export default function Home({ history }) {
 
   const { loading, data, error } = useQuery(GET_USERS);
 
-  if (error) {
-    console.log(error);
-  }
+  const [getMessages, { loading: messagesLoading, data: messagesData }] =
+    useLazyQuery(GET_MESSAGES);
 
-  if (data) {
-    console.log(data);
-  }
+  useEffect(() => {
+    if (selectedUser) {
+      getMessages({ variables: { from: selectedUser } });
+    }
+  }, [selectedUser]);
+
+  if (messagesData) console.log(messagesData.getMessages);
 
   let usersMarkup;
   if (!data || loading) {
@@ -48,7 +65,11 @@ export default function Home({ history }) {
     usersMarkup = <p>No users have joined yet</p>;
   } else if (data.getUsers.length > 0) {
     usersMarkup = data.getUsers.map((user) => (
-      <div className="d-flex p-3 " key={user.username}>
+      <div
+        className="d-flex p-3 "
+        key={user.username}
+        onClick={() => setSelectedUser(user.username)}
+      >
         <Image
           src={user.imageUrl}
           roundedCircle
@@ -92,7 +113,13 @@ export default function Home({ history }) {
           {usersMarkup}
         </Col>
         <Col xs={8}>
-          <p>Messages</p>
+          {messagesData && messagesData.getMessages.length > 0 ? (
+            messagesData.getMessages.map((message) => (
+              <p key={message.uuid}>{message.content}</p>
+            ))
+          ) : (
+            <p>You are now connected!!</p>
+          )}
         </Col>
       </Row>
     </Fragment>
