@@ -38,8 +38,8 @@ export default function Home({ history }) {
         </div>
       </Row>
       <Row className="bg-white">
-        <Users setSelectedUser={setSelectedUser} selectedUser={selectedUser} />
-        <Messages selectedUser={selectedUser} />
+        <Users />
+        <Messages />
       </Row>
     </Fragment>
   );
