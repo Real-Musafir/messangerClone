@@ -1,14 +1,14 @@
 import React from "react";
 import { gql, useQuery } from "@apollo/client";
 import { Col, Image } from "react-bootstrap";
-import { useMessageDispatch, useMessageState } from "../../context/message";
 import classNames from "classnames";
+
+import { useMessageDispatch, useMessageState } from "../../context/message";
 
 const GET_USERS = gql`
   query getUsers {
     getUsers {
       username
-      email
       createdAt
       imageUrl
       latestMessage {
@@ -25,7 +25,6 @@ const GET_USERS = gql`
 export default function Users() {
   const dispatch = useMessageDispatch();
   const { users } = useMessageState();
-
   const selectedUser = users?.find((u) => u.selected === true)?.username;
 
   const { loading } = useQuery(GET_USERS, {
@@ -45,24 +44,24 @@ export default function Users() {
       return (
         <div
           role="button"
-          className={classNames("d-flex p-3", { "bg-white": selected })}
+          className={classNames(
+            "user-div d-flex justify-content-center justify-content-md-start p-3",
+            {
+              "bg-white": selected,
+            }
+          )}
           key={user.username}
           onClick={() =>
             dispatch({ type: "SET_SELECTED_USER", payload: user.username })
           }
         >
-          <Image
-            src={user.imageUrl}
-            roundedCircle
-            className="mr-2"
-            style={{ width: 50, height: 50, objectFit: "cover" }}
-          />
-          <div>
-            <p className="text-success m-0">{user.username}</p>
-            <p className="font-weight-light m-0">
+          <Image src={user.imageUrl} className="user-image" />
+          <div className="d-none d-md-block ml-2">
+            <p className="text-success">{user.username}</p>
+            <p className="font-weight-light">
               {user.latestMessage
                 ? user.latestMessage.content
-                : "You are not connected"}
+                : "You are now connected!"}
             </p>
           </div>
         </div>
@@ -70,7 +69,7 @@ export default function Users() {
     });
   }
   return (
-    <Col xs={4} className="p-0 bg-light">
+    <Col xs={2} md={4} className="p-0 bg-secondary">
       {usersMarkup}
     </Col>
   );
